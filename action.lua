@@ -53,7 +53,6 @@ function gui.dialog:k_any(k)
 		gui.rtable[tonumber(gui.result.value)].NUMERO and
 		gui.question("Baixar como entregue/Excluir registro?") then
 		eng.delete(gui.rtable[tonumber(gui.result.value)].NUMERO)
-		eng.countent()
 		gui.rload()
 		gui.result:valuechanged_cb()
 	elseif k == iup.K_CR then
@@ -180,20 +179,17 @@ end
 
 function gui.new_ok.action()
 	if gui.search.value and gui.search.value ~= "" then
-		local count = true
 		local i = eng.get(gui.number.value)
 		if i and i.NOME then
 			if gui.question(string.format(
 				"O registro %s já existe, deseja substituir:\n%s?",
 				gui.number.value, i.NOME)) then
 				eng.delete(i.NUMERO)
-				count = false
 			else
 				return
 			end
 		end
 		eng.new(gui.search.value, gui.number.value, gui.date.value)
-		if count then eng.countcad() end
 		if tonumber(gui.number.value) > 0 then
 			gui.number.value = gui.number.value + 1
 		else

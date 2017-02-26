@@ -147,47 +147,6 @@ function eng.last()
 	return e.max + 1, r.max + 1
 end
 
-function eng.todaycount()
-	local date = os.date("*t")
-	local cur = eng.con:execute(string.format(
-		"SELECT OBJETOSCADASTRADOS, OBJETOSENTREGUES FROM QUANTIDADECADASTRADOS WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
-		date.year, date.month, date.day))
-	local row = { }
-	cur:fetch(row)
-	cur:close()
-	if row[1] == nil then
-		eng.startcount()
-		return 0, 0
-	end
-	return row[1], row[2]
-end
-
-function eng.startcount()
-	local date = os.date("*t")
-	eng.con:execute(string.format(
-		"INSERT INTO QUANTIDADECADASTRADOS VALUES ('%d-%02d-%02d 00:00:00', '%d', '%02d', '%02d', '%s', 0, 0);",
-		date.year, date.month, date.day, date.year, date.day, date.month, eng.mes[date.month]))
-	eng.con:commit()
-end
-
-function eng.countcad()
-	local date = os.date("*t")
-	local a = eng.todaycount()
-	eng.con:execute(string.format(
-		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSCADASTRADOS = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
-				a + 1, date.year, date.month, date.day))
-	eng.con:commit()
-end
-
-function eng.countent()
-	local date = os.date("*t")
-	local _, b = eng.todaycount()
-	eng.con:execute(string.format(
-		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSENTREGUES = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
-				b + 1, date.year, date.month, date.day))
-	eng.con:commit()
-end
-
 function eng.done()
 	if eng.con then eng.con:close() end
 	if eng.env then eng.env:close() end
