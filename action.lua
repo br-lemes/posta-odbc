@@ -1,4 +1,9 @@
 
+local iup = require("iuplua")
+local eng = require("engine")
+local gui = require("layout")
+local ico = require("icons")
+
 gui.select_timer = iup.timer{
 	time      = 2500,
 	run       = "NO",
@@ -116,18 +121,18 @@ function gui.iload()
 	if gui.rtable[n] then
 		gui.result.appenditem = gui.rtable[n].NOME
 		if gui.rtable[n].NUMERO <= 10000 then
-			gui.result["image" .. n] = gui.email
+			gui.result["image" .. n] = ico.email
 		elseif gui.rtable[n].NUMERO <= 20000 then
-			gui.result["image" .. n] = gui.newspaper
+			gui.result["image" .. n] = ico.newspaper
 		else
-			gui.result["image" .. n] = gui.bell
+			gui.result["image" .. n] = ico.bell
 		end
 	else
 		iup.SetIdle(nil)
 	end
 end
 
-function gui.search:valuechanged_cb()
+function gui.search.valuechanged_cb()
 	if gui.menuedit.value == "OFF" then
 		gui.load_timer.run  = "NO"
 	end
@@ -141,7 +146,7 @@ gui.load_timer = iup.timer{
 }
 
 function gui.result:valuechanged_cb()
-	local n = tonumber(gui.result.value)
+	local n = tonumber(self.value)
 	if n > 0 then
 		gui.b_zbox.value = gui.details_box
 		gui.details.title = string.format("%s - %s",
@@ -167,14 +172,14 @@ function gui.lastvalue()
 	end
 end
 
-function gui.new_cancel:action()
+function gui.new_cancel.action()
 	gui.lastvalue()
 	gui.zbox.value = gui.result_box
 	gui.result.value = nil
 	iup.SetFocus(gui.search)
 end
 
-function gui.new_ok:action()
+function gui.new_ok.action()
 	if gui.search.value and gui.search.value ~= "" then
 		local count = true
 		local i = eng.get(gui.number.value)
@@ -203,53 +208,52 @@ function gui.new_ok:action()
 	gui.lastvalue()
 end
 
-function gui.menubutton:action()
+function gui.menubutton.action()
 	gui.menu:popup(iup.MOUSEPOS, iup.MOUSEPOS)
 end
 
-function gui.menusearch:action(late)
+function gui.menusearch.action()
 	gui.menuedit.value   = "OFF"
 	gui.menusearch.value = "ON"
 	gui.select_timer.run = "NO"
-	gui.menubutton.image = gui.magnifier
-	gui.zbox.value = gui.result_box
-	if not late then gui.rload() end
-	iup.SetFocus(gui.search)
-end
-
-function gui.menuedit:action()
-	gui.menusearch.value = "OFF"
-	gui.menuedit.value   = "ON"
-	gui.select_timer.run = "NO"
-	gui.menubutton.image = gui.pencil
+	gui.menubutton.image = ico.magnifier
 	gui.zbox.value = gui.result_box
 	gui.rload()
 	iup.SetFocus(gui.search)
 end
 
-function gui.laste:action()
-	local e = eng.last()
-	gui.number.value = e
+function gui.menuedit.action()
+	gui.menusearch.value = "OFF"
+	gui.menuedit.value   = "ON"
+	gui.select_timer.run = "NO"
+	gui.menubutton.image = ico.pencil
+	gui.zbox.value = gui.result_box
+	gui.rload()
+	iup.SetFocus(gui.search)
 end
 
-function gui.lastr:action()
-	local e, r = eng.last()
+function gui.laste.action()
+	gui.number.value = eng.last()
+end
+
+function gui.lastr.action()
+	local _, r = eng.last()
 	gui.number.value = r
 end
 
-function gui.lastq:action()
+function gui.lastq.action()
 	gui.number.value = eng.maxnumber()
 end
 
-function gui.numprev:action()
+function gui.numprev.action()
 	gui.number.value = tonumber(gui.number.value) - 1
 end
 
-function gui.numnext:action()
+function gui.numnext.action()
 	gui.number.value = tonumber(gui.number.value) + 1
 end
 
-function gui.dateprev:action()
+function gui.dateprev.action()
 	local d = { }
 	d.year, d.month, d.day = gui.date.value:match('(%d%d%d%d)-(%d%d)-(%d%d)')
 	if d.year and d.month and d.day then
@@ -260,7 +264,7 @@ function gui.dateprev:action()
 	end
 end
 
-function gui.datenext:action()
+function gui.datenext.action()
 	local d = { }
 	d.year, d.month, d.day = gui.date.value:match('(%d%d%d%d)-(%d%d)-(%d%d)')
 	if d.year and d.month and d.day then

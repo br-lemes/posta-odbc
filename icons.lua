@@ -1,4 +1,8 @@
-gui.book_previous = iup.imagergba{
+
+local iup = require("iuplua")
+local ico = { }
+
+ico.book_previous = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -21,7 +25,7 @@ gui.book_previous = iup.imagergba{
 	},
 }
 
-gui.book_next = iup.imagergba{
+ico.book_next = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -44,7 +48,7 @@ gui.book_next = iup.imagergba{
 	},
 }
 
-gui.date_previous = iup.imagergba{
+ico.date_previous = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -67,7 +71,7 @@ gui.date_previous = iup.imagergba{
 	},
 }
 
-gui.date_next = iup.imagergba{
+ico.date_next = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -90,7 +94,7 @@ gui.date_next = iup.imagergba{
 	},
 }
 
-gui.email_go = iup.imagergba{
+ico.email_go = iup.imagergba{
 	width    = 16,
 	height   = 16,
 	pixels   = {
@@ -113,7 +117,7 @@ gui.email_go = iup.imagergba{
 	},
 }
 
-gui.newspaper_go = iup.imagergba{
+ico.newspaper_go = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -136,7 +140,7 @@ gui.newspaper_go = iup.imagergba{
 	},
 }
 
-gui.email  = iup.imagergba{
+ico.email  = iup.imagergba{
 	width  = 24,
 	height = 24,
 	pixels = {
@@ -167,7 +171,7 @@ gui.email  = iup.imagergba{
 	},
 }
 
-gui.newspaper = iup.imagergba{
+ico.newspaper = iup.imagergba{
 	width  = 24,
 	height = 24,
 	pixels = {
@@ -198,7 +202,7 @@ gui.newspaper = iup.imagergba{
 	},
 }
 
-gui.magnifier = iup.imagergba{
+ico.magnifier = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -221,7 +225,7 @@ gui.magnifier = iup.imagergba{
 	},
 }
 
-gui.pencil = iup.imagergba{
+ico.pencil = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -244,7 +248,7 @@ gui.pencil = iup.imagergba{
 	},
 }
 
-gui.bell = iup.imagergba{
+ico.bell = iup.imagergba{
 	width  = 24,
 	height = 24,
 	pixels = {
@@ -275,7 +279,7 @@ gui.bell = iup.imagergba{
 	},
 }
 
-gui.bell_go = iup.imagergba{
+ico.bell_go = iup.imagergba{
 	width  = 16,
 	height = 16,
 	pixels = {
@@ -297,3 +301,5 @@ gui.bell_go = iup.imagergba{
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 42, 0, 0, 0, 51, 0, 0, 0, 51, 0, 0, 0, 51, 0, 0, 0, 15, 0, 0, 0, 51, 0, 0, 0, 51, 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	},
 }
+
+return ico

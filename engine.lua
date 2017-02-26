@@ -1,7 +1,8 @@
 
-require("luasql.odbc")
+local luasql = require("luasql.odbc")
+local gui = require("layout")
 
-eng = { }
+local eng = { }
 eng.maxresult = 50
 eng.mes       = {
 	"Janeiro", "Fevereiro", "Março",
@@ -11,7 +12,6 @@ eng.mes       = {
 }
 
 function eng.open_posta()
-	local date = os.date("*t")
 	local err
 	if not eng.env_posta then
 		eng.env_posta, err = luasql.odbc()
@@ -43,66 +43,6 @@ function eng.check_options(options)
 		options.search = ""
 	end
 	return options
-end
-
-function eng.rawsearch_customer(options)
-	options = eng.check_options(options)
-	options.sby = options.sby or "2"
-	local customer = { }
-	function CUSTOMER(c)
-		if not c.NAME or c.NAME == "" then return end
-		c.ADDRESS = c.ADDRESS or ""
-		local a, b
-		if options.sby == "1" then
-			a, b = pcall(string.find, c.NAME, options.search)
-		elseif options.sby == "2" then
-			a, b = pcall(string.find, c.ADDRESS, options.search)
-		elseif options.sby == "3" then
-			a, b = pcall(string.find, options.search, c.NAME)
-		end
-		if a and b then
-			table.insert(customer, {NAME = c.NAME, ADDRESS = c.ADDRESS})
-		end
-	end
-	dofile("customer.lua")
-	return customer
-end
-
-function eng.rawsearch_posta(options)
-	options = eng.check_options(options)
-	options.sby    = options.sby    or "1"
-	options.order  = options.order  or "NOME"
-	options.max    = options.max    or 50
-	if options.low == nil then options.low = 10000 end
-	if options.high == nil then options.high = 10000 end
-	local result = { }
-	local cur = eng.con_posta:execute(string.format(
-		"SELECT * FROM POSTA ORDER BY %s;", options.order))
-	if cur then
-		local row = { }
-		while cur:fetch(row, "a") and #result < options.max do
-			local a, b
-			if options.sby == "1" then
-				a, b = pcall(string.find, row.NOME, options.search)
-			elseif options.sby == "3" then
-				a, b = pcall(string.find, row.NUMERO, options.search)
-			end
-			if a and b then
-				local i = {
-					NOME   = row.NOME,
-					NUMERO = row.NUMERO,
-					DATA   = row.DATA
-				}
-				if options.low and i.NUMERO < options.low then
-					table.insert(result, i)
-				elseif options.high and i.NUMERO > options.high then
-					table.insert(result, i)
-				end
-			end
-		end
-		cur:close()
-	end
-	return result
 end
 
 function eng.search(search)
@@ -238,7 +178,7 @@ end
 
 function eng.countcad()
 	local date = os.date("*t")
-	local a, b = eng.todaycount()
+	local a = eng.todaycount()
 	eng.con_posta:execute(string.format(
 		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSCADASTRADOS = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
 				a + 1, date.year, date.month, date.day))
@@ -247,7 +187,7 @@ end
 
 function eng.countent()
 	local date = os.date("*t")
-	local a, b = eng.todaycount()
+	local _, b = eng.todaycount()
 	eng.con_posta:execute(string.format(
 		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSENTREGUES = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
 				b + 1, date.year, date.month, date.day))
@@ -258,3 +198,5 @@ function eng.done()
 	if eng.con_posta then eng.con_posta:close() end
 	if eng.env_posta then eng.env_posta:close() end
 end
+
+return eng

@@ -2,13 +2,9 @@
 os.setlocale("pt_BR")
 os.setlocale("C", "numeric")
 
-gui = { }
-
-require("iuplua")
-require("luasql.odbc")
-require("icons")
-require("engine")
-require("layout")
+local iup = require("iuplua")
+local eng = require("engine")
+local gui = require("layout")
 require("action")
 
 gui.dialog:show()

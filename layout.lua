@@ -1,4 +1,9 @@
 
+local iup = require("iuplua")
+local ico = require("icons")
+
+local gui = { }
+
 gui.menu = iup.menu{
 	radio = "YES",
 	iup.item{
@@ -29,7 +34,7 @@ gui.dialog = iup.dialog{
 			},
 			iup.button{
 				name  = "menubutton",
-				image = gui.magnifier,
+				image = ico.magnifier,
 			},
 		},
 		iup.zbox{
@@ -49,14 +54,12 @@ gui.dialog = iup.dialog{
 					rastersize = "x50",
 					iup.vbox{
 						name = "details_box",
---						iup.fill{},
 						iup.label{
 							name      = "details",
 							expand    = "HORIZONTAL",
 							alignment = "ACENTER",
 							title     = "\n",
 						},
---						iup.fill{},
 					},
 					iup.vbox{
 						name = "icons_box",
@@ -65,21 +68,21 @@ gui.dialog = iup.dialog{
 							iup.fill{},
 							iup.toggle{
 								name   = "femail",
-								image  = gui.email,
+								image  = ico.email,
 								value  = "ON",
 								tip    = "Envelope (0 a 10000)",
 								action = function () gui.rload() end,
 							},
 							iup.toggle{
 								name   = "fnewspaper",
-								image  = gui.newspaper,
+								image  = ico.newspaper,
 								value  = "ON",
 								tip    = "Revista (10001 a 20000)",
 								action = function () gui.rload() end,
 							},
 							iup.toggle{
 								name   = "fbell",
-								image  = gui.bell,
+								image  = ico.bell,
 								value  = "ON",
 								tip    = "Aviso (acima de 20001)",
 								action = function () gui.rload() end,
@@ -98,7 +101,7 @@ gui.dialog = iup.dialog{
 						iup.button{
 							name  = "numprev",
 							tip   = "-",
-							image = gui.book_previous,
+							image = ico.book_previous,
 						},
 						iup.text{
 							name       = "number",
@@ -108,30 +111,30 @@ gui.dialog = iup.dialog{
 						iup.button{
 							name  = "numnext",
 							tip   = "+",
-							image = gui.book_next,
+							image = ico.book_next,
 						},
 						iup.fill{rastersize="16"},
 						iup.button{
 							name  = "laste",
 							tip   = "F12",
-							image = gui.email_go,
+							image = ico.email_go,
 						},
 						iup.button{
 							name  = "lastr",
 							tip   = "F11",
-							image = gui.newspaper_go,
+							image = ico.newspaper_go,
 						},
 						iup.button{
 							name  = "lastq",
 							tip   = "F10",
-							image = gui.bell_go,
+							image = ico.bell_go,
 						},
 						iup.fill{},
 					},
 					iup.hbox{
 						iup.button{
 							name  = "dateprev",
-							image = gui.date_previous,
+							image = ico.date_previous,
 						},
 						iup.text{
 							name       = "date",
@@ -141,7 +144,7 @@ gui.dialog = iup.dialog{
 						},
 						iup.button{
 							name  = "datenext",
-							image = gui.date_next,
+							image = ico.date_next,
 						},
 						iup.fill{},
 						iup.button{
@@ -176,3 +179,5 @@ end
 
 gui:iupnames(gui.dialog)
 gui:iupnames(gui.menu)
+
+return gui
