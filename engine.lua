@@ -39,23 +39,6 @@ function eng.close()
 	eng.con = nil
 end
 
-function eng.check_options(options)
-	if type(options) == "string" then
-		local temp = options
-		options = { }
-		options.search = temp
-	end
-	if type(options) ~= "table" then
-		options = { }
-	end
-	if type(options.search) == "string" then
-		options.search = options.search:upper()
-	else
-		options.search = ""
-	end
-	return options
-end
-
 function eng.search(search)
 	local r = { }
 	search = search:upper()
