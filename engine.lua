@@ -11,21 +11,32 @@ eng.mes       = {
 	"Outubro", "Novembro",  "Dezembro",
 }
 
-function eng.open_posta()
+local function engerr(err)
+	local msg = "Erro de conexão com banco de dados. Pressione F5 para atualizar."
+	if err then msg = string.format("%s\nSe o problema persistir, peça ajuda com a mensagem abaixo:\n%s", msg, err) end
+	iup.Message("Erro", msg)
+end
+
+function eng.open()
 	local err
-	if not eng.env_posta then
-		eng.env_posta, err = luasql.odbc()
-		if not eng.env_posta then
+	if not eng.env then
+		eng.env, err = luasql.odbc()
+		if not eng.env then
+			engerr(err)
 			return nil, err
 		end
 	end
-	eng.con_posta, err = eng.env_posta:connect("POSTA")
-	return eng.con_posta, err
+	eng.con, err = eng.env:connect("POSTA")
+	if not eng.con then
+		engerr(err)
+		return nil, err
+	end
+	return eng.con
 end
 
-function eng.close_posta()
-	if eng.con_posta then eng.con_posta:close() end
-	eng.con_posta = nil
+function eng.close()
+	if eng.con then eng.con:close() end
+	eng.con = nil
 end
 
 function eng.check_options(options)
@@ -48,8 +59,8 @@ end
 function eng.search(search)
 	local r = { }
 	search = search:upper()
-	if eng.con_posta and (gui.femail.value == "ON" or gui.fnewspaper.value == "ON" or gui.fbell.value == "ON" or gui.menuedit.value == "ON") then
-		local cur = eng.con_posta:execute("SELECT * FROM POSTA ORDER BY NOME;")
+	if eng.con and (gui.femail.value == "ON" or gui.fnewspaper.value == "ON" or gui.fbell.value == "ON" or gui.menuedit.value == "ON") then
+		local cur = eng.con:execute("SELECT * FROM POSTA ORDER BY NOME;")
 		if cur then
 			local row = { }
 			while cur:fetch(row, "a") and #r < eng.maxresult do
@@ -76,9 +87,9 @@ function eng.search(search)
 end
 
 function eng.maxnumber()
-	if not eng.con_posta then return 0 end
+	if not eng.con then return 0 end
 
-	local cur = eng.con_posta:execute("SELECT MAX(NUMERO) FROM POSTA;")
+	local cur = eng.con:execute("SELECT MAX(NUMERO) FROM POSTA;")
 	local row = { }
 	cur:fetch(row)
 	cur:close()
@@ -87,27 +98,27 @@ end
 
 function eng.delete(n)
 	n = tonumber(n)
-	if not eng.con_posta then return end
+	if not eng.con then return end
 
-	eng.con_posta:execute(string.format("DELETE FROM POSTA WHERE NUMERO=%d;", n))
+	eng.con:execute(string.format("DELETE FROM POSTA WHERE NUMERO=%d;", n))
 end
 
 function eng.new(name, number, date)
 	number = tonumber(number)
-	if not eng.con_posta then return end
+	if not eng.con then return end
 
 	local a, m, d = date:match("(%d%d%d%d)-(%d%d)-(%d%d)")
-	eng.con_posta:execute(string.format(
+	eng.con:execute(string.format(
 		"INSERT INTO POSTA VALUES ('%s', %d, '%s', %d, '%s', %d, 1);",
 		name:upper(), number, date, d, eng.mes[tonumber(m)], a))
-	eng.con_posta:commit()
+	eng.con:commit()
 end
 
 function eng.get(n)
 	n = tonumber(n)
-	if not eng.con_posta then return end
+	if not eng.con then return end
 
-	local cur = eng.con_posta:execute(string.format(
+	local cur = eng.con:execute(string.format(
 		"SELECT * FROM POSTA WHERE NUMERO=%d;", n))
 	local row = { }
 	cur:fetch(row, "a")
@@ -116,9 +127,9 @@ function eng.get(n)
 end
 
 function eng.minmax(d)
-	if not eng.con_posta then return {min=0, max=0}, {min=0, max=0} end
+	if not eng.con then return {min=0, max=0}, {min=0, max=0} end
 
-	local cur = eng.con_posta:execute("SELECT * FROM POSTA;")
+	local cur = eng.con:execute("SELECT * FROM POSTA;")
 	local row = { }
 	local e = { }
 	local r = { }
@@ -155,7 +166,7 @@ end
 
 function eng.todaycount()
 	local date = os.date("*t")
-	local cur = eng.con_posta:execute(string.format(
+	local cur = eng.con:execute(string.format(
 		"SELECT OBJETOSCADASTRADOS, OBJETOSENTREGUES FROM QUANTIDADECADASTRADOS WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
 		date.year, date.month, date.day))
 	local row = { }
@@ -170,33 +181,33 @@ end
 
 function eng.startcount()
 	local date = os.date("*t")
-	eng.con_posta:execute(string.format(
+	eng.con:execute(string.format(
 		"INSERT INTO QUANTIDADECADASTRADOS VALUES ('%d-%02d-%02d 00:00:00', '%d', '%02d', '%02d', '%s', 0, 0);",
 		date.year, date.month, date.day, date.year, date.day, date.month, eng.mes[date.month]))
-	eng.con_posta:commit()
+	eng.con:commit()
 end
 
 function eng.countcad()
 	local date = os.date("*t")
 	local a = eng.todaycount()
-	eng.con_posta:execute(string.format(
+	eng.con:execute(string.format(
 		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSCADASTRADOS = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
 				a + 1, date.year, date.month, date.day))
-	eng.con_posta:commit()
+	eng.con:commit()
 end
 
 function eng.countent()
 	local date = os.date("*t")
 	local _, b = eng.todaycount()
-	eng.con_posta:execute(string.format(
+	eng.con:execute(string.format(
 		"UPDATE QUANTIDADECADASTRADOS SET OBJETOSENTREGUES = %d WHERE ANO = '%d' AND MES = '%02d' AND DIA = '%02d';",
 				b + 1, date.year, date.month, date.day))
-	eng.con_posta:commit()
+	eng.con:commit()
 end
 
 function eng.done()
-	if eng.con_posta then eng.con_posta:close() end
-	if eng.env_posta then eng.env_posta:close() end
+	if eng.con then eng.con:close() end
+	if eng.env then eng.env:close() end
 end
 
 return eng

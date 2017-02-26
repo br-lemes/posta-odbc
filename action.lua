@@ -87,9 +87,8 @@ function gui.dialog:k_any(k)
 	elseif k == iup.K_F4 then
 		gui.menuedit:action()
 	elseif k == iup.K_F5 then
-		eng.close_posta()
-		local con, err = eng.open_posta()
-		if not con then iup.Message("Erro", err) end
+		eng.close()
+		eng.open()
 	elseif k == iup.K_plus and gui.zbox.value == gui.new_box then
 		gui.number.value = tonumber(gui.number.value) + 1
 		return iup.IGNORE

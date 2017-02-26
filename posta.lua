@@ -8,8 +8,7 @@ local gui = require("layout")
 require("action")
 
 gui.dialog:show()
-local con, err = eng.open_posta()
-if not con then	iup.Message("Erro", err) end
+eng.open()
 gui.result:valuechanged_cb()
 gui.number.value = eng.maxnumber()
 gui.rload()
