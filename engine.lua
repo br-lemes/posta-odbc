@@ -109,42 +109,16 @@ function eng.get(n)
 	return row
 end
 
-function eng.minmax(d)
-	if not eng.con then return {min=0, max=0}, {min=0, max=0} end
+function eng.last(min, max)
+	if not eng.con then return 0 end
 
-	local cur = eng.con:execute("SELECT * FROM POSTA;")
+	local cur, err = eng.con:execute(string.format(
+		"SELECT MAX(NUMERO) FROM POSTA WHERE DATA IN (SELECT MAX(DATA) FROM POSTA WHERE NUMERO>%d AND NUMERO<%d) AND NUMERO>%d AND NUMERO<%d;",
+		min, max, min, max))
 	local row = { }
-	local e = { }
-	local r = { }
-	e.min = 999999
-	e.max = 0
-	r.min = 999999
-	r.max = 0
-	while cur:fetch(row, "a") do
-		if row.NUMERO > 0 and row.NUMERO <= 10000 and row.DATA == d then
-			e.max = math.max(e.max, row.NUMERO)
-			e.min = math.min(e.min, row.NUMERO)
-		elseif row.NUMERO > 10000 and row.NUMERO <= 20000 and row.DATA == d then
-			r.max = math.max(r.max, row.NUMERO)
-			r.min = math.min(r.min, row.NUMERO)
-		end
-	end
+	cur:fetch(row)
 	cur:close()
-	if e.min == 999999 then e.min = 0 end
-	if r.min == 999999 then r.min = 0 end
-	return e, r
-end
-
-function eng.last()
-	local e, r = eng.minmax(os.date("%Y-%m-%d") .. " 00:00:00")
-	local i = 1
-	while e.max == 0 or r.max == 0 do
-		local tmpe, tmpr = eng.minmax(os.date("%Y-%m-%d", os.time()-i*24*60*60) .. " 00:00:00")
-		if e.max == 0 then e.max = tmpe.max end
-		if r.max == 0 then r.max = tmpr.max end
-		i = i + 1
-	end
-	return e.max + 1, r.max + 1
+	return row[1] + 1 or 0
 end
 
 function eng.done()

@@ -228,12 +228,11 @@ function gui.menuedit.action()
 end
 
 function gui.laste.action()
-	gui.number.value = eng.last()
+	gui.number.value = eng.last(1, 10000)
 end
 
 function gui.lastr.action()
-	local _, r = eng.last()
-	gui.number.value = r
+	gui.number.value = eng.last(10000, 20000)
 end
 
 function gui.lastq.action()
