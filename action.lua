@@ -119,7 +119,7 @@ function gui.iload()
 	if gui.rtable[n] then
 		gui.result.appenditem = gui.rtable[n].NOME
 		if gui.rtable[n].NUMERO <= 10000 then
-			gui.result["image" .. n] = ico.email
+			gui.result["image" .. n] = ico.mail_white
 		elseif gui.rtable[n].NUMERO <= 20000 then
 			gui.result["image" .. n] = ico.newspaper
 		else

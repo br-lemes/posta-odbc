@@ -68,7 +68,7 @@ gui.dialog = iup.dialog{
 							iup.fill{},
 							iup.toggle{
 								name   = "femail",
-								image  = ico.email,
+								image  = ico.mail_white,
 								value  = "ON",
 								tip    = "Envelope (0 a 10000)",
 								action = function () gui.rload() end,
@@ -117,17 +117,17 @@ gui.dialog = iup.dialog{
 						iup.button{
 							name  = "laste",
 							tip   = "F12",
-							image = ico.email_go,
+							image = ico.mail_white,
 						},
 						iup.button{
 							name  = "lastr",
 							tip   = "F11",
-							image = ico.newspaper_go,
+							image = ico.newspaper,
 						},
 						iup.button{
 							name  = "lastq",
 							tip   = "F10",
-							image = ico.bell_go,
+							image = ico.bell,
 						},
 						iup.fill{},
 					},
