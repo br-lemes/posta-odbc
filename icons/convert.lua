@@ -16,8 +16,8 @@ local function convert(name)
 			arq:write("\n\t\t")
 		end
 		count = count + 1
-		if count == tonumber(ico.width) then count = 0 end
-		arq:write(string.format("0x%.2x,%s", v, count == 0 and "" or " "))
+		if count == tonumber(ico.width) * 4 then count = 0 end
+		arq:write(string.format("%3d,%s", v, count == 0 and "" or " "))
 	end
 	arq:write("\n\t}\n}\n")
 end
