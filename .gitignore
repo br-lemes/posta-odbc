@@ -1,0 +1,12 @@
+client/client
+client.exe
+data
+hibernate.cfg.xml
+iup.dll
+iuplua51.dll
+libmysql.dll
+lua5.1.dll
+luasql/mysql.dll
+server/server
+server.exe
+SciTE.properties
