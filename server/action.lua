@@ -66,7 +66,7 @@ function gui.timer:action_cb()
 	act.clean()
 end
 
-gui.server.title = "Server: " .. sro.server
+gui.server.title = "Concentrador SRO: " .. sro.server
 
 local diffdata = fun.diffdata()
 if not diffdata or diffdata >= 1.5 then
