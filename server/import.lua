@@ -63,6 +63,21 @@ local function import()
 			row.CS_NAME = row.CS_NAME and row.CS_NAME:upper() or ""
 			row.LTD_ITEMCODE = row.LTD_ITEMCODE:upper()
 			row.LTD_COMMENT = row.LTD_COMMENT:upper() or ""
+			-- custom [[
+			if row.LTD_COMMENT:find("VOL") or row.LTD_COMMENT:find("PCTE") or row.CS_NAME:find("1%d%.?%d%d%d") then
+				row.OBJ_TYPE = "volume"
+			elseif (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("SS")) or row.LTD_COMMENT:find("SEDEX") or row.CS_NAME:find("2%d%.?%d%d%d") then
+				row.OBJ_TYPE = "envsed"
+			elseif (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("RE")) or row.LTD_COMMENT:find("REGISTRADO") or row.CS_NAME:find("3%d%.?%d%d%d") then
+				row.OBJ_TYPE = "envreg"
+			elseif row.LTD_COMMENT:find("INT") then
+				row.OBJ_TYPE = "intern"
+			elseif row.LTD_ITEMDESTINY == 2 then
+				row.OBJ_TYPE = "postal"
+			else
+				row.OBJ_TYPE = "outros"
+			end
+			-- ]]
 			srodata:write("\t{\n")
 			srodata:write(string.format("\t\tCS_NAME         = %q,\n", row.CS_NAME))
 			srodata:write(string.format("\t\tLTD_ID          = %q,\n", row.LTD_ID))
@@ -73,6 +88,7 @@ local function import()
 			srodata:write(string.format("\t\tLTD_LASTTIME    = %d,\n", row.LTD_LASTTIME or 0))
 			srodata:write(string.format("\t\tLTD_COMMENT     = %q,\n", row.LTD_COMMENT))
 			srodata:write(string.format("\t\tLTD_ITEMDESTINY = %d,\n", row.LTD_ITEMDESTINY))
+			srodata:write(string.format("\t\tOBJ_TYPE        = %q,\n", row.OBJ_TYPE))
 			srodata:write("\t},\n")
 			if ldi[row.LTD_ID] then
 				ldidata:write(string.format("table.insert(ldidata[%q], srodata[%d])\n", row.LTD_ID, count))
@@ -81,7 +97,7 @@ local function import()
 				ldi[row.LTD_ID] = true
 			end
 			objdata:write(string.format("\t[%q] = srodata[%d],\n", row.LTD_ITEMCODE, count))
-			csvdata:write(string.format("%s,,%d,%s,,%s,,,,,,,,,%s\n", row.LTD_ITEMCODE, row.LTD_GROUPNUMBER, row.CS_NAME, row.LTD_COMMENT, row.LTD_ID))
+			csvdata:write(string.format("%s,,%d,%s,,%s,,,,,,,,,%s,%s\n", row.LTD_ITEMCODE, row.LTD_GROUPNUMBER, row.CS_NAME, row.LTD_COMMENT, row.LTD_ID, row.OBJ_TYPE))
 			count = count + 1
 		end
 		cur:close()
@@ -94,6 +110,9 @@ local function import()
 	csvdata:close()
 	con_sro:close()
 	env_sro:close()
+	ready = io.open("data/ready.lua", "w")
+	ready:write(string.format("ready = %q\n", dsuffix))
+	ready:close()
 	return string.format("Sincronizado em %ss.\nNo dia %s.",
 		os.clock()-start, dsuffix)
 end
