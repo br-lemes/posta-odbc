@@ -64,16 +64,16 @@ local function import()
 			row.LTD_ITEMCODE = row.LTD_ITEMCODE:upper()
 			row.LTD_COMMENT = row.LTD_COMMENT:upper() or ""
 			-- custom [[
-			if row.LTD_COMMENT:find("VOL") or row.LTD_COMMENT:find("PCTE") or row.CS_NAME:find("1%d%.?%d%d%d") then
-				row.OBJ_TYPE = "volume"
-			elseif (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("SS")) or row.LTD_COMMENT:find("SEDEX") or row.CS_NAME:find("2%d%.?%d%d%d") then
-				row.OBJ_TYPE = "envsed"
-			elseif (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("RE")) or row.LTD_COMMENT:find("REGISTRADO") or row.CS_NAME:find("3%d%.?%d%d%d") then
-				row.OBJ_TYPE = "envreg"
+			if tonumber(row.LTD_ITEMDESTINY) == 2 then
+				row.OBJ_TYPE = "postal"
 			elseif row.LTD_COMMENT:find("INT") then
 				row.OBJ_TYPE = "intern"
-			elseif row.LTD_ITEMDESTINY == 2 then
-				row.OBJ_TYPE = "postal"
+			elseif row.CS_NAME:find("1%d%.?%d%d%d") or row.LTD_COMMENT:find("VOL") or row.LTD_COMMENT:find("PCTE") then
+				row.OBJ_TYPE = "volume"
+			elseif row.CS_NAME:find("2%d%.?%d%d%d") or (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("SS")) or row.LTD_COMMENT:find("SEDEX") then
+				row.OBJ_TYPE = "envsed"
+			elseif row.CS_NAME:find("3%d%.?%d%d%d") or (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("RE")) or row.LTD_COMMENT:find("REGISTRADO") then
+				row.OBJ_TYPE = "envreg"
 			else
 				row.OBJ_TYPE = "outros"
 			end
