@@ -72,7 +72,7 @@ local function import()
 				row.OBJ_TYPE = "volume"
 			elseif row.CS_NAME:find("2%d%.?%d%d%d") or (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("SS")) or row.LTD_COMMENT:find("SEDEX") then
 				row.OBJ_TYPE = "envsed"
-			elseif row.CS_NAME:find("3%d%.?%d%d%d") or (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("RE")) or row.LTD_COMMENT:find("REGISTRADO") then
+			elseif row.CS_NAME:find("3%d%.?%d%d%d") or (row.LTD_COMMENT:find("ENV") and row.LTD_COMMENT:find("RE")) or row.LTD_COMMENT:find("REG") then
 				row.OBJ_TYPE = "envreg"
 			else
 				row.OBJ_TYPE = "outros"
